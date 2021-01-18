@@ -165,6 +165,9 @@ static PyObject* _play_buffer(PyObject *self, PyObject *args)
 
     /* fixed 100ms latency */
     return play_os(buffer_obj, num_samples, num_channels, bytes_per_channel, sample_rate, &play_list_head, SA_LATENCY_US);
+static PyObject* _list_devices(PyObject *self, PyObject *args)
+{
+    return list_devices();
 }
 
 static PyMethodDef _simpleaudio_methods[] = {
@@ -172,6 +175,7 @@ static PyMethodDef _simpleaudio_methods[] = {
     {"_stop",  _stop, METH_VARARGS, "Stop playback of a specified audio object."},
     {"_stop_all",  _stop_all, METH_NOARGS, "Stop playback of all audio objects."},
     {"_is_playing",  _is_playing, METH_VARARGS, "Indicate whether the specified audio object is still playing."},
+    {"_list_devices",  _list_devices, METH_NOARGS, "List audio devices found."},
     {NULL, NULL, 0, NULL} /* Sentinel */
 };
 

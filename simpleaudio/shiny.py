@@ -60,3 +60,6 @@ def play_buffer(audio_data, num_channels, bytes_per_sample, sample_rate):
     play_id = _sa._play_buffer(audio_data, num_channels, bytes_per_sample,
                                sample_rate)
     return PlayObject(play_id)
+
+def list_devices():
+    return _sa._list_devices()

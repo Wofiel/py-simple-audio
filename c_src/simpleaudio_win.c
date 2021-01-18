@@ -107,6 +107,32 @@ DWORD WINAPI bufferThread(LPVOID thread_param) {
     return 0;
 }
 
+PyObject* list_devices() {
+    /* list devices */
+    int num_devices = waveOutGetNumDevs();
+    //fprintf(DBG_OUT, DBG_PRE"num devices %d\n", num_devices);
+
+    // 33, one extra for the idx
+    char device_names[32][33];
+    memset(&device_names, '\0', 32*32*sizeof(char));
+    
+    sprintf(device_names[0], "0Default device");
+    for (int j = 0; j < num_devices; j++)
+    {
+        WAVEOUTCAPS caps;
+        
+        int result = waveOutGetDevCaps(j, &caps, sizeof(caps));
+        if (result == 0)
+        {
+            //fprintf(DBG_OUT, DBG_PRE"%d: %s\n", j, caps.szPname);
+            sprintf(device_names[j+1], "%d", j);
+            strcpy(device_names[j+1]+1, caps.szPname);
+        }
+    }
+
+    return Py_BuildValue("s#", device_names, (num_devices + 1)*32);
+}
+
 PyObject* play_os(Py_buffer buffer_obj, int len_samples, int num_channels, int bytes_per_chan,
                   int sample_rate, play_item_t* play_list_head, int latency_us) {
     char err_msg_buf[SA_ERR_STR_LEN];
