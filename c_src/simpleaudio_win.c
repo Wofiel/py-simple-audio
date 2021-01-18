@@ -134,7 +134,7 @@ PyObject* list_devices() {
 }
 
 PyObject* play_os(Py_buffer buffer_obj, int len_samples, int num_channels, int bytes_per_chan,
-                  int sample_rate, play_item_t* play_list_head, int latency_us) {
+                  int sample_rate, play_item_t* play_list_head, int latency_us, int device) {
     char err_msg_buf[SA_ERR_STR_LEN];
     char sys_msg_buf[SA_ERR_STR_LEN / 2];
     audio_blob_t* audio_blob;
@@ -194,8 +194,10 @@ PyObject* play_os(Py_buffer buffer_obj, int len_samples, int num_channels, int b
         return NULL;
     }
 
-    /* open a handle to the default audio device */
-    result = waveOutOpen((HWAVEOUT*)&audio_blob->handle, WAVE_MAPPER, &audio_format, thread_id, 0, CALLBACK_THREAD);
+    //fprintf(DBG_OUT, DBG_PRE"Playing on device: %d\n", device);
+    
+    /* open a handle to the chosen audio device */
+    result = waveOutOpen((HWAVEOUT*)&audio_blob->handle, device, &audio_format, thread_id, 0, CALLBACK_THREAD);
     if (result != MMSYSERR_NOERROR) {
         waveOutGetErrorText(result, sys_msg_buf, SYS_STR_LEN);
         WIN_EXCEPTION("Failed to open audio device.", result, sys_msg_buf, err_msg_buf);

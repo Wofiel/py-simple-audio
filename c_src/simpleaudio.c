@@ -113,10 +113,11 @@ static PyObject* _play_buffer(PyObject *self, PyObject *args)
     int bytes_per_channel;
     int sample_rate;
     int num_samples;
+    int device;
 
     dbg1("_play_buffer call\n");
 
-    if (!PyArg_ParseTuple(args, "Oiii", &audio_obj, &num_channels, &bytes_per_channel, &sample_rate)) {
+    if (!PyArg_ParseTuple(args, "Oiiii", &audio_obj, &num_channels, &bytes_per_channel, &sample_rate, &device)) {
         return NULL;
     }
 
@@ -164,14 +165,16 @@ static PyObject* _play_buffer(PyObject *self, PyObject *args)
     PyEval_InitThreads();
 
     /* fixed 100ms latency */
-    return play_os(buffer_obj, num_samples, num_channels, bytes_per_channel, sample_rate, &play_list_head, SA_LATENCY_US);
+    return play_os(buffer_obj, num_samples, num_channels, bytes_per_channel, sample_rate, &play_list_head, SA_LATENCY_US, device);
+}
+
 static PyObject* _list_devices(PyObject *self, PyObject *args)
 {
     return list_devices();
 }
 
 static PyMethodDef _simpleaudio_methods[] = {
-    {"_play_buffer",  _play_buffer, METH_VARARGS, "Play audio from an object supporting the buffer interface."},
+    {"_play_buffer",  _play_buffer, METH_VARARGS, "Play audio from an object supporting the buffer interface on a chosen device."},
     {"_stop",  _stop, METH_VARARGS, "Stop playback of a specified audio object."},
     {"_stop_all",  _stop_all, METH_NOARGS, "Stop playback of all audio objects."},
     {"_is_playing",  _is_playing, METH_VARARGS, "Indicate whether the specified audio object is still playing."},

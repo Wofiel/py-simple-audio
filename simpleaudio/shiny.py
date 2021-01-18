@@ -55,10 +55,12 @@ class PlayObject(object):
 def stop_all():
     _sa._stop_all()
 
-
 def play_buffer(audio_data, num_channels, bytes_per_sample, sample_rate):
+    return play_buffer_on_device(audio_data, num_channels, bytes_per_sample, sample_rate, -1)
+
+def play_buffer_on_device(audio_data, num_channels, bytes_per_sample, sample_rate, device):
     play_id = _sa._play_buffer(audio_data, num_channels, bytes_per_sample,
-                               sample_rate)
+                               sample_rate, device)
     return PlayObject(play_id)
 
 def list_devices():
