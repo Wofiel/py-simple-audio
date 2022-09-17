@@ -130,7 +130,7 @@ PyObject* list_devices() {
         }
     }
 
-    return Py_BuildValue("s#", device_names, (num_devices + 1)*32);
+    return Py_BuildValue("y#", device_names, (num_devices + 1)*32);
 }
 
 PyObject* play_os(Py_buffer buffer_obj, int len_samples, int num_channels, int bytes_per_chan,
